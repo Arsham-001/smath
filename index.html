@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>A-Level Mathematics Revision Checklist – OCR</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@600;700&family=Source+Sans+3:wght@400;500;600&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Source Sans 3', Arial, sans-serif;
+    font-size: 9pt; color: #111;
+    background: #c8c8c8; padding: 0; max-width: none; margin: 0;
+  }
+
+  .top-bar {
+    position: sticky; top: 0; z-index: 50;
+    background: #0d1b2e; color: #fff;
+    padding: 8px 20px;
+    display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  }
+  .top-bar h1 {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 12pt; font-weight: 700; color: #fff; white-space: nowrap;
+  }
+  .top-bar .subtitle { font-size: 7pt; color: #99b; margin-top: 1px; }
+
+  .progress-wrap {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 8pt; color: #ccc; flex: 1; min-width: 140px;
+  }
+  .progress-bar-bg {
+    flex: 1; height: 6px; background: #333; border-radius: 4px; overflow: hidden; min-width: 80px;
+  }
+  .progress-bar-fill {
+    height: 100%; width: 0%; border-radius: 4px;
+    background: linear-gradient(90deg, #e53e1f 0%, #e6a800 50%, #5ab02a 100%);
+    transition: width 0.3s ease;
+  }
+  #progress-label { white-space: nowrap; font-weight: 600; color: #fff; }
+
+  .key-box {
+    display: flex; gap: 10px 16px; font-size: 7.5pt; color: #ccc;
+    align-items: center; flex-wrap: wrap;
+  }
+  .key-item { display: inline-flex; align-items: center; gap: 4px; }
+  .key-swatch {
+    display: inline-block; width: 11px; height: 11px;
+    border-radius: 2px; border: 1px solid rgba(255,255,255,0.2); flex-shrink: 0;
+  }
+
+  #sync-status {
+    font-size: 8pt; padding: 4px 10px; border-radius: 12px;
+    cursor: pointer; white-space: nowrap; font-weight: 600;
+    transition: background 0.2s; border: 1.5px solid transparent;
+  }
+  .sync-idle   { background: #333; color: #aaa; border-color: #555; }
+  .sync-ok     { background: #1a3d1a; color: #5ab02a; border-color: #5ab02a; }
+  .sync-saving { background: #3d3000; color: #e6a800; border-color: #e6a800; }
+  .sync-error  { background: #3d0f0f; color: #e53e1f; border-color: #e53e1f; }
+  #sync-status:hover { filter: brightness(1.2); }
+
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6); z-index: 9999;
+    align-items: center; justify-content: center; isolation: isolate;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: #fff; border-radius: 6px; padding: 24px 28px;
+    max-width: 440px; width: 90%;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4); font-size: 9.5pt; color: #111;
+  }
+  .modal h2 { font-size: 13pt; margin-bottom: 6px; color: #0d1b2e; }
+  .modal p  { font-size: 8.5pt; color: #555; margin-bottom: 14px; line-height: 1.5; }
+  .modal label { display: block; font-weight: 600; font-size: 8.5pt; margin-bottom: 3px; }
+  .modal input[type=text], .modal input[type=password] {
+    width: 100%; padding: 7px 10px; border: 1.5px solid #ccc;
+    border-radius: 4px; font-size: 9pt; margin-bottom: 4px;
+    font-family: monospace; box-sizing: border-box;
+  }
+  .modal input:focus { outline: none; border-color: #1a3a6b; }
+  .hint { font-size: 7.5pt; color: #888; margin-bottom: 12px; }
+  .modal-btns { display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px; }
+  .btn-save {
+    background: #1a3a6b; color: #fff; border: none;
+    padding: 7px 18px; border-radius: 4px; font-size: 9pt;
+    cursor: pointer; font-weight: 600;
+  }
+  .btn-save:hover { background: #122a52; }
+  .btn-cancel {
+    background: #eee; color: #444; border: none;
+    padding: 7px 14px; border-radius: 4px; font-size: 9pt; cursor: pointer;
+  }
+
+  .scroll-track {
+    display: flex; flex-direction: row; align-items: flex-start;
+    gap: 16px; padding: 20px;
+    overflow-x: auto; overflow-y: hidden;
+    min-height: calc(100vh - 52px);
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .module-panel {
+    flex: 0 0 210mm; width: 210mm; min-height: 297mm;
+    background: #fff; border-radius: 3px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+    padding: 10mm; scroll-snap-align: start; overflow: visible;
+  }
+
+  table {
+    width: 100%; border-collapse: collapse; margin-bottom: 0; table-layout: fixed;
+  }
+  col.main { width: auto; }
+  col.rag  { width: 24px; }
+
+  tr.comp-header td {
+    color: #fff; font-weight: 700; font-size: 10pt;
+    padding: 6px 8px; letter-spacing: 0.02em;
+  }
+  .comp-title-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  }
+
+  tr.section-header td {
+    font-weight: 700; font-size: 8.5pt; padding: 4px 8px;
+    border-top: 1px solid rgba(0,0,0,0.12);
+  }
+  tr.lo-header td {
+    background: #e8e8e8; font-size: 8pt; font-weight: 600;
+    padding: 3px 7px; vertical-align: middle;
+    border-top: 1px solid #ccc; border-bottom: 1px solid #bbb;
+  }
+  tr.lo-header td.rag-r { background: #e53e1f; color: #fff; text-align: center; font-weight: 700; }
+  tr.lo-header td.rag-a { background: #e6a800; color: #fff; text-align: center; font-weight: 700; }
+  tr.lo-header td.rag-g { background: #5ab02a; color: #fff; text-align: center; font-weight: 700; }
+
+  tr.lo-row td.lo-text {
+    padding: 3px 7px 3px 10px; vertical-align: top;
+    border-bottom: 1px solid #ebebeb; line-height: 1.4;
+  }
+  tr.lo-row:nth-child(even) td.lo-text { background: #fafafa; }
+  tr.lo-row.has-r td.lo-text { border-left: 3px solid #e53e1f; }
+  tr.lo-row.has-a td.lo-text { border-left: 3px solid #e6a800; }
+  tr.lo-row.has-g td.lo-text { border-left: 3px solid #5ab02a; }
+
+  tr.lo-row td.cb {
+    width: 24px; text-align: center; vertical-align: middle;
+    border-bottom: 1px solid #ebebeb; border-left: 1px solid #e0e0e0;
+  }
+
+  input.rag-cb {
+    appearance: none; -webkit-appearance: none;
+    width: 14px; height: 14px; border: 1.5px solid #aaa; border-radius: 2px;
+    cursor: pointer; display: block; margin: 0 auto; position: relative;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  input.rag-cb:checked::after {
+    content: ""; position: absolute; left: 3px; top: 0px;
+    width: 5px; height: 9px;
+    border: 2px solid #fff; border-top: none; border-left: none;
+    transform: rotate(45deg);
+  }
+  input.r-cb:checked { background: #e53e1f; border-color: #e53e1f; }
+  input.a-cb:checked { background: #e6a800; border-color: #e6a800; }
+  input.g-cb:checked { background: #5ab02a; border-color: #5ab02a; }
+  input.r-cb:hover:not(:checked) { border-color: #e53e1f; }
+  input.a-cb:hover:not(:checked) { border-color: #e6a800; }
+  input.g-cb:hover:not(:checked) { border-color: #5ab02a; }
+
+  .mod-ring-wrap { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+  .mod-ring { width: 32px; height: 32px; transform: rotate(-90deg); }
+  .ring-bg  { fill: none; stroke: rgba(255,255,255,0.25); stroke-width: 3.5; }
+  .ring-fill { fill: none; stroke: #5ab02a; stroke-width: 3.5; stroke-linecap: round; transition: stroke-dasharray 0.4s ease; }
+  .mod-pct { font-size: 9pt; font-weight: 700; color: #fff; min-width: 32px; text-align: right; }
+
+  @media print {
+    body { background: #fff; }
+    .top-bar { display: none; }
+    .scroll-track { display: block; padding: 0; overflow: visible; }
+    .module-panel { page-break-before: always; box-shadow: none; min-height: 0; margin-bottom: 8mm; }
+    .module-panel:first-child { page-break-before: avoid; }
+    tr { page-break-inside: avoid; break-inside: avoid; }
+    input.rag-cb { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+
+<div class="modal-overlay" id="setup-modal">
+  <div class="modal">
+    <h2>GitHub Sync Setup</h2>
+    <p>Your ticks will be saved to a file in your GitHub repo and synced across all devices.</p>
+    <label>GitHub Username</label>
+    <input type="text" id="cfg-user" placeholder="e.g. arsham123">
+    <label>Repository Name</label>
+    <input type="text" id="cfg-repo" placeholder="e.g. physics-checklist">
+    <label>Personal Access Token</label>
+    <input type="password" id="cfg-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+    <div class="hint">GitHub → Settings → Developer settings → Fine-grained tokens.<br>Permission: <strong>Contents → Read and Write</strong> on your repo.</div>
+    <div class="modal-btns">
+      <button class="btn-cancel" id="modal-cancel">Cancel</button>
+      <button class="btn-save" id="modal-save">Save &amp; connect</button>
+    </div>
+  </div>
+</div>
+
+<div class="top-bar">
+  <div>
+    <h1>A-Level Mathematics Revision Checklist</h1>
+    <div class="subtitle">OCR A-Level Mathematics A (H240) — scroll sideways for each component</div>
+  </div>
+  <div class="progress-wrap">
+    <span id="progress-label">0 / 0</span>
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-bar"></div></div>
+    <span style="color:#aaa">green</span>
+  </div>
+  <div class="key-box">
+    <span class="key-item"><span class="key-swatch" style="background:#e53e1f"></span>R = not confident</span>
+    <span class="key-item"><span class="key-swatch" style="background:#e6a800"></span>A = mostly confident</span>
+    <span class="key-item"><span class="key-swatch" style="background:#5ab02a"></span>G = confident</span>
+  </div>
+  <div id="sync-status" class="sync-idle">⚙ Setup sync</div>
+</div>
+
+<div class="scroll-track">
+
+<div class="module-panel" id="pure">
+<table><colgroup><col class="main"><col class="rag"><col class="rag"><col class="rag"></colgroup>
+<tr class="comp-header"><td colspan="4" style="background:#1a3a6b"><div class="comp-title-row"><span>Pure Mathematics</span><span class="mod-ring-wrap"><svg class="mod-ring" viewBox="0 0 36 36"><circle class="ring-bg" cx="18" cy="18" r="15.9"/><circle class="ring-fill" cx="18" cy="18" r="15.9" stroke-dasharray="0 100"/></svg><span class="mod-pct" id="pct_pure">0%</span></span></div></td></tr>
+<tr class="section-header"><td colspan="4" style="background:#d5dbe4;color:#1a1a1a">1.01 — Proof</td></tr>
+<tr class="lo-header"><td>Learning outcomes</td><td class="rag-r">R</td><td class="rag-a">A</td><td class="rag-g">G</td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use the structure of mathematical proof, proceeding from given assumptions through a series of logical steps to a conclusion — including proof by deduction and proof by exhaustion</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_0_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_0_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_0_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use the logical connectives: and (∧), or (∨), not (¬), implies (⇒), implied by (⇐), equivalent to (⟺)</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_1_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_1_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_1_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to show disproof by counter-example</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_2_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_2_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_2_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use proof by contradiction, including proving the irrationality of √2</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_3_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_3_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_3_g" data-module="pure"></td></tr>
+<tr class="section-header"><td colspan="4" style="background:#d5dbe4;color:#1a1a1a">1.02 — Algebra and Functions</td></tr>
+<tr class="lo-header"><td>Learning outcomes</td><td class="rag-r">R</td><td class="rag-a">A</td><td class="rag-g">G</td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use the laws of indices for all rational exponents, including negative and zero indices</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_4_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_4_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_4_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to use and manipulate surds, including rationalising the denominator</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_5_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_5_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_5_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to solve simultaneous equations in two variables by elimination and by substitution, including one linear and one quadratic equation</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_6_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_6_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_6_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to work with quadratic functions and their graphs, and the discriminant of a quadratic function, including the conditions for real and repeated roots</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_7_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_7_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_7_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to complete the square for a quadratic expression</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_8_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_8_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_8_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to solve quadratic equations including quadratic equations in a function of the unknown</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_9_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_9_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_9_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to solve linear and quadratic inequalities in a single variable and interpret such inequalities graphically</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_10_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_10_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_10_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to express solutions through correct use of &quot;and&quot; and &quot;or&quot;, or through set notation including interval notation</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_11_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_11_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_11_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to represent linear and quadratic inequalities graphically</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_12_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_12_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_12_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to simplify rational expressions including by factorising and division by linear expressions; divide a polynomial by a linear or quadratic expression</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_13_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_13_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_13_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use the factor theorem</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_14_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_14_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_14_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to interpret the algebraic solution of equations graphically, and use intersection points to solve equations</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_15_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_15_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_15_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to sketch curves defined by y = |f(x)| and y = f(|x|), and understand their relationship</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_16_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_16_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_16_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to understand and use composite functions, the modulus function, and inverse functions including their domain and range</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_17_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_17_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_17_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to decompose rational functions into partial fractions (with denominators no more complicated than repeated linear and irreducible quadratic factors)</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_18_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_18_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_18_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand the effect of simple transformations on graphs: y = af(x), y = f(x) + a, y = f(x + a), y = f(ax)</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_19_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_19_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_19_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to use functions in modelling, including understanding limitations and refinements of models</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_20_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_20_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_20_g" data-module="pure"></td></tr>
+<tr class="section-header"><td colspan="4" style="background:#d5dbe4;color:#1a1a1a">1.03 — Coordinate Geometry</td></tr>
+<tr class="lo-header"><td>Learning outcomes</td><td class="rag-r">R</td><td class="rag-a">A</td><td class="rag-g">G</td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use the equation of a straight line, including the forms y = mx + c, y − y1 = m(x − x1), ax + by + c = 0</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_21_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_21_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_21_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to use the gradient conditions for two straight lines to be parallel or perpendicular</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_22_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_22_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_22_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to use straight line models in a variety of contexts</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_23_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_23_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_23_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use the coordinate geometry of a circle — the equation of a circle in standard form (x − a)² + (y − b)² = r²</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_24_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_24_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_24_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to use the following circle properties: the angle in a semicircle is 90°; the perpendicular from the centre bisects the chord; the radius at a tangent point is perpendicular to the tangent</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_25_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_25_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_25_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to use more complex contexts and applications of coordinate geometry including parametric equations of curves</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_26_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_26_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_26_g" data-module="pure"></td></tr>
+<tr class="section-header"><td colspan="4" style="background:#d5dbe4;color:#1a1a1a">1.04 — Sequences and Series</td></tr>
+<tr class="lo-header"><td>Learning outcomes</td><td class="rag-r">R</td><td class="rag-a">A</td><td class="rag-g">G</td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use the binomial expansion of (a + bx)ⁿ for positive integer n, and the notations n! and ⁿCᵣ</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_27_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_27_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_27_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Know the link between binomial expansions and binomial probabilities</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_28_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_28_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_28_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to extend the binomial expansion to any rational n including finding the range of values for which the expansion is valid</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_29_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_29_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_29_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Know that the expansion of (1 + x)ⁿ for rational n is valid for |x| &lt; 1</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_30_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_30_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_30_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to work with sequences including those given by a formula for the nth term and those generated by a simple recurrence relation</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_31_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_31_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_31_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to work with arithmetic sequences including the nth term and sum to n terms</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_32_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_32_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_32_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to work with geometric sequences including the nth term, sum to n terms, and sum to infinity for |r| &lt; 1</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_33_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_33_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_33_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to use sigma notation for sums of series</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_34_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_34_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_34_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and use the concept of a limit, and the sum to infinity of a geometric series</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_35_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_35_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_35_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to model situations using sequences and series</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_36_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_36_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_36_g" data-module="pure"></td></tr>
+<tr class="section-header"><td colspan="4" style="background:#d5dbe4;color:#1a1a1a">1.05 — Trigonometry</td></tr>
+<tr class="lo-header"><td>Learning outcomes</td><td class="rag-r">R</td><td class="rag-a">A</td><td class="rag-g">G</td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use the definitions of sine, cosine and tangent for all arguments, and their graphs and symmetries</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_37_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_37_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_37_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use the sine and cosine rules, and the formula for the area of a triangle ½ab sinC</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_38_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_38_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_38_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use the values of sin, cos and tan for 0°, 30°, 45°, 60°, 90° and their multiples</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_39_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_39_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_39_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use radians, including converting between radians and degrees</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_40_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_40_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_40_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use small angle approximations: sinθ ≈ θ, cosθ ≈ 1 − θ²/2, tanθ ≈ θ</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_41_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_41_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_41_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use the sine, cosine and tangent functions; their graphs; symmetries; and key values</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_42_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_42_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_42_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Know and be able to use the identity sin²θ + cos²θ = 1, and be able to derive and use sec, cosec and cot</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_43_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_43_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_43_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Know and be able to use the identities: sec²θ = 1 + tan²θ and cosec²θ = 1 + cot²θ</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_44_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_44_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_44_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use double angle formulae; addition formulae for sine, cosine and tangent</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_45_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_45_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_45_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use expressions of the form a sin x + b cos x in the forms R sin(x ± φ) or R cos(x ± φ)</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_46_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_46_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_46_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to solve simple trigonometric equations in a given interval, including quadratic equations in sin, cos and tan</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_47_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_47_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_47_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to construct proofs involving trigonometric functions and identities</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_48_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_48_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_48_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and use the inverse trigonometric functions arcsin, arccos and arctan; their domains and ranges</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_49_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_49_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_49_g" data-module="pure"></td></tr>
+<tr class="section-header"><td colspan="4" style="background:#d5dbe4;color:#1a1a1a">1.06 — Exponentials and Logarithms</td></tr>
+<tr class="lo-header"><td>Learning outcomes</td><td class="rag-r">R</td><td class="rag-a">A</td><td class="rag-g">G</td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Know and use the function aˣ and its graph, where a is positive; know and use the function eˣ and its graph</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_50_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_50_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_50_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Know that the gradient of eˣ equals eˣ and hence understand why the exponential function is used in modelling growth and decay</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_51_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_51_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_51_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Know and use the definition of logₐx as the inverse of aˣ, for all x and where a &gt; 0, a ≠ 1</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_52_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_52_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_52_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Know and use the function ln x and its graph</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_53_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_53_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_53_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use the laws of logarithms: logₐ(xy), logₐ(x/y), logₐ(xⁿ)</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_54_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_54_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_54_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to solve equations of the form aˣ = b</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_55_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_55_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_55_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to use logarithmic graphs to estimate parameters in relationships of the form y = axⁿ and y = kaˣ</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_56_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_56_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_56_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use exponential growth and decay; use in modelling (e.g. population growth, radioactive decay, drug concentration)</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_57_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_57_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_57_g" data-module="pure"></td></tr>
+<tr class="section-header"><td colspan="4" style="background:#d5dbe4;color:#1a1a1a">1.07 — Differentiation</td></tr>
+<tr class="lo-header"><td>Learning outcomes</td><td class="rag-r">R</td><td class="rag-a">A</td><td class="rag-g">G</td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use the derivative of f(x) as the gradient of the tangent to the graph at a general point (x, y)</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_58_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_58_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_58_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use the gradient of the tangent at a point as the limit of the gradient of a chord</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_59_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_59_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_59_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to sketch the gradient function for a given curve</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_60_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_60_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_60_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to find second derivatives and their meaning; use the notation f&#x27;(x) and dy/dx</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_61_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_61_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_61_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to show differentiation from first principles for small positive integer powers of x</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_62_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_62_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_62_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to differentiate xⁿ for rational values of n, and related sums, differences and constant multiples</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_63_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_63_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_63_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to differentiate eˣ, ln x, sin x, cos x, tan x and related sums, differences and constant multiples</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_64_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_64_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_64_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use the chain rule for composite functions</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_65_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_65_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_65_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use the product rule</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_66_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_66_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_66_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use the quotient rule</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_67_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_67_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_67_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to differentiate using the chain, product and quotient rules in combination</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_68_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_68_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_68_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to differentiate simple functions and relations implicitly, and use this for connected rates of change</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_69_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_69_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_69_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to apply differentiation to find the gradient of a curve, equations of tangents and normals</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_70_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_70_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_70_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to apply differentiation to find and classify stationary points, and use the second derivative test</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_71_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_71_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_71_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to apply differentiation to optimisation problems in context</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_72_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_72_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_72_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to construct simple differential equations in pure mathematics and in context</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_73_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_73_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_73_g" data-module="pure"></td></tr>
+<tr class="section-header"><td colspan="4" style="background:#d5dbe4;color:#1a1a1a">1.08 — Integration</td></tr>
+<tr class="lo-header"><td>Learning outcomes</td><td class="rag-r">R</td><td class="rag-a">A</td><td class="rag-g">G</td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Know and be able to use the fundamental theorem of calculus, understanding that integration is the reverse of differentiation</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_74_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_74_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_74_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to integrate xⁿ (n ≠ −1) and related sums, differences and constant multiples</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_75_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_75_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_75_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to integrate eˣ, 1/x, sin x, cos x and related sums, differences and constant multiples</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_76_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_76_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_76_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to evaluate definite integrals; use a definite integral to find the area under a curve</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_77_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_77_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_77_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to use a definite integral to find the area between two curves</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_78_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_78_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_78_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use integration by substitution in both indefinite and definite integration</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_79_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_79_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_79_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to carry out integration by parts including repeated use</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_80_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_80_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_80_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to integrate using partial fractions</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_81_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_81_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_81_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to evaluate integrals involving parametric equations</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_82_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_82_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_82_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to understand and use the trapezium rule to estimate the area under a curve</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_83_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_83_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_83_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to interpret the result of integration in context, including as a rate of change</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_84_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_84_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_84_g" data-module="pure"></td></tr>
+<tr class="section-header"><td colspan="4" style="background:#d5dbe4;color:#1a1a1a">1.09 — Numerical Methods</td></tr>
+<tr class="lo-header"><td>Learning outcomes</td><td class="rag-r">R</td><td class="rag-a">A</td><td class="rag-g">G</td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to locate roots of f(x) = 0 by considering changes of sign of f(x), and understand the conditions under which this is valid</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_85_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_85_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_85_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to solve equations approximately using simple iterative methods, including fixed-point iteration and recurrence relations</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_86_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_86_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_86_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to solve equations using the Newton-Raphson method and understand when it may fail</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_87_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_87_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_87_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand how to carry out fixed point iteration including recognising when it converges or diverges using cobweb and staircase diagrams</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_88_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_88_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_88_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to use numerical methods to solve problems in context</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_89_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_89_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_89_g" data-module="pure"></td></tr>
+<tr class="section-header"><td colspan="4" style="background:#d5dbe4;color:#1a1a1a">1.10 — Vectors</td></tr>
+<tr class="lo-header"><td>Learning outcomes</td><td class="rag-r">R</td><td class="rag-a">A</td><td class="rag-g">G</td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to use vectors in two dimensions, expressed as xi + yj or as a column vector</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_90_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_90_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_90_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to use vectors in three dimensions, expressed as xi + yj + zk</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_91_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_91_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_91_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to calculate the magnitude and direction of a vector and convert between component form and magnitude-direction form</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_92_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_92_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_92_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to add vectors diagrammatically and algebraically, and multiply vectors by scalars; understand the geometrical interpretations</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_93_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_93_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_93_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use position vectors</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_94_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_94_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_94_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to calculate the distance between two points using vectors</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_95_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_95_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_95_g" data-module="pure"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to use vectors to solve problems in pure mathematics and in context, including forces and kinematics</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_96_r" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_96_a" data-module="pure"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_96_g" data-module="pure"></td></tr>
+</table>
+</div>
+<div class="module-panel" id="statistics">
+<table><colgroup><col class="main"><col class="rag"><col class="rag"><col class="rag"></colgroup>
+<tr class="comp-header"><td colspan="4" style="background:#2a5c2a"><div class="comp-title-row"><span>Statistics</span><span class="mod-ring-wrap"><svg class="mod-ring" viewBox="0 0 36 36"><circle class="ring-bg" cx="18" cy="18" r="15.9"/><circle class="ring-fill" cx="18" cy="18" r="15.9" stroke-dasharray="0 100"/></svg><span class="mod-pct" id="pct_statistics">0%</span></span></div></td></tr>
+<tr class="section-header"><td colspan="4" style="background:#d8e1d8;color:#1a1a1a">2.01 — Statistical Sampling</td></tr>
+<tr class="lo-header"><td>Learning outcomes</td><td class="rag-r">R</td><td class="rag-a">A</td><td class="rag-g">G</td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use the terms population and sample</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_97_r" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_97_a" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_97_g" data-module="statistics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to use samples to make informal inferences about the population</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_98_r" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_98_a" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_98_g" data-module="statistics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use sampling techniques: simple random sampling, systematic and stratified sampling, opportunity and quota sampling</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_99_r" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_99_a" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_99_g" data-module="statistics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and comment on the advantages and disadvantages of sampling methods</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_100_r" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_100_a" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_100_g" data-module="statistics"></td></tr>
+<tr class="section-header"><td colspan="4" style="background:#d8e1d8;color:#1a1a1a">2.02 — Data Presentation and Interpretation</td></tr>
+<tr class="lo-header"><td>Learning outcomes</td><td class="rag-r">R</td><td class="rag-a">A</td><td class="rag-g">G</td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to interpret tables and diagrams for single-variable data: vertical line charts, dot plots, bar charts, histograms, cumulative frequency diagrams, box plots</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_101_r" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_101_a" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_101_g" data-module="statistics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to calculate and interpret measures of central tendency: mean, median, mode; and measures of spread: variance, standard deviation, range, IQR</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_102_r" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_102_a" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_102_g" data-module="statistics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to interpret scatter diagrams and regression lines for bivariate data; understand that correlation does not imply causation</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_103_r" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_103_a" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_103_g" data-module="statistics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to understand informal interpretation of correlation, including the distinction between positive, negative and zero correlation</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_104_r" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_104_a" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_104_g" data-module="statistics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to calculate mean and standard deviation from raw data, frequency tables, and using calculator functions</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_105_r" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_105_a" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_105_g" data-module="statistics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to recognise and interpret possible outliers in data sets and in scatter diagrams</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_106_r" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_106_a" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_106_g" data-module="statistics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to select or critique data presentation techniques in context</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_107_r" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_107_a" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_107_g" data-module="statistics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to clean data including dealing with missing data, errors and outliers</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_108_r" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_108_a" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_108_g" data-module="statistics"></td></tr>
+<tr class="section-header"><td colspan="4" style="background:#d8e1d8;color:#1a1a1a">2.03 — Probability</td></tr>
+<tr class="lo-header"><td>Learning outcomes</td><td class="rag-r">R</td><td class="rag-a">A</td><td class="rag-g">G</td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use mutually exclusive and independent events when calculating probabilities</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_109_r" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_109_a" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_109_g" data-module="statistics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to use appropriate diagrams to assist in the calculation of probabilities, including Venn diagrams and tree diagrams</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_110_r" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_110_a" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_110_g" data-module="statistics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand conditional probability, and be able to calculate conditional probabilities from two-way tables, Venn diagrams and tree diagrams</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_111_r" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_111_a" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_111_g" data-module="statistics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand the conditional probability notation P(A|B) and know that P(A|B) = P(A∩B)/P(B)</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_112_r" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_112_a" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_112_g" data-module="statistics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to model with probability, including assessing the reasonableness of probability models</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_113_r" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_113_a" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_113_g" data-module="statistics"></td></tr>
+<tr class="section-header"><td colspan="4" style="background:#d8e1d8;color:#1a1a1a">2.04 — Statistical Distributions</td></tr>
+<tr class="lo-header"><td>Learning outcomes</td><td class="rag-r">R</td><td class="rag-a">A</td><td class="rag-g">G</td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use simple, finite, discrete probability distributions defined in the form of a table or a formula</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_114_r" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_114_a" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_114_g" data-module="statistics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use the binomial distribution B(n, p) as a model; know the conditions under which it applies</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_115_r" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_115_a" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_115_g" data-module="statistics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to calculate probabilities using the binomial distribution, using appropriate calculator functions</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_116_r" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_116_a" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_116_g" data-module="statistics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Know and be able to use the expected value E(X) = np and variance Var(X) = np(1−p) for the binomial distribution</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_117_r" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_117_a" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_117_g" data-module="statistics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use the normal distribution as a continuous probability model N(μ, σ²)</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_118_r" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_118_a" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_118_g" data-module="statistics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to find probabilities using the normal distribution from tables or calculator functions</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_119_r" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_119_a" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_119_g" data-module="statistics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand links between the normal distribution and the binomial distribution, and when to use normal approximation to the binomial</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_120_r" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_120_a" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_120_g" data-module="statistics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to select an appropriate probability distribution for a context and justify the choice</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_121_r" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_121_a" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_121_g" data-module="statistics"></td></tr>
+<tr class="section-header"><td colspan="4" style="background:#d8e1d8;color:#1a1a1a">2.05 — Statistical Hypothesis Testing</td></tr>
+<tr class="lo-header"><td>Learning outcomes</td><td class="rag-r">R</td><td class="rag-a">A</td><td class="rag-g">G</td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use the language of statistical hypothesis testing: null hypothesis H₀, alternative hypothesis H₁, significance level, test statistic, p-value, critical region, critical value, one-tailed and two-tailed tests</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_122_r" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_122_a" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_122_g" data-module="statistics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to conduct a statistical hypothesis test for the proportion in the binomial distribution and interpret the results in context</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_123_r" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_123_a" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_123_g" data-module="statistics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand that a sample is being used to make an inference about the population and appreciate the limitations of this approach</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_124_r" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_124_a" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_124_g" data-module="statistics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Recognise that a hypothesis test based on a small sample is less reliable than one based on a larger sample</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_125_r" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_125_a" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_125_g" data-module="statistics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and use Pearson&#x27;s product moment correlation coefficient for a sample and interpret the result</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_126_r" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_126_a" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_126_g" data-module="statistics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Use and be able to interpret a hypothesis test for zero correlation</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_127_r" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_127_a" data-module="statistics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_127_g" data-module="statistics"></td></tr>
+</table>
+</div>
+<div class="module-panel" id="mechanics">
+<table><colgroup><col class="main"><col class="rag"><col class="rag"><col class="rag"></colgroup>
+<tr class="comp-header"><td colspan="4" style="background:#6b2a1a"><div class="comp-title-row"><span>Mechanics</span><span class="mod-ring-wrap"><svg class="mod-ring" viewBox="0 0 36 36"><circle class="ring-bg" cx="18" cy="18" r="15.9"/><circle class="ring-fill" cx="18" cy="18" r="15.9" stroke-dasharray="0 100"/></svg><span class="mod-pct" id="pct_mechanics">0%</span></span></div></td></tr>
+<tr class="section-header"><td colspan="4" style="background:#e4d8d5;color:#1a1a1a">3.01 — Quantities and Units in Mechanics</td></tr>
+<tr class="lo-header"><td>Learning outcomes</td><td class="rag-r">R</td><td class="rag-a">A</td><td class="rag-g">G</td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use the fundamental quantities and units in the S.I. system: length (m), time (s), mass (kg)</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_128_r" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_128_a" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_128_g" data-module="mechanics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use derived quantities and units: velocity (m/s), acceleration (m/s²), force (N), weight (N), moment (N m)</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_129_r" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_129_a" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_129_g" data-module="mechanics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use the concept of a model and its assumptions in mechanics problems</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_130_r" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_130_a" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_130_g" data-module="mechanics"></td></tr>
+<tr class="section-header"><td colspan="4" style="background:#e4d8d5;color:#1a1a1a">3.02 — Kinematics</td></tr>
+<tr class="lo-header"><td>Learning outcomes</td><td class="rag-r">R</td><td class="rag-a">A</td><td class="rag-g">G</td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use the language of kinematics: position, displacement, distance, distance travelled, velocity, speed, acceleration</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_131_r" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_131_a" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_131_g" data-module="mechanics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand, use and interpret graphs in kinematics for motion in a straight line: displacement-time, velocity-time, acceleration-time</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_132_r" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_132_a" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_132_g" data-module="mechanics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to interpret displacement-time and velocity-time graphs, and in particular understand the relationship between displacement, velocity and acceleration</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_133_r" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_133_a" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_133_g" data-module="mechanics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand, use and derive the formulae for uniform acceleration (SUVAT equations): v = u + at, s = ut + ½at², v² = u² + 2as, s = ½(u + v)t</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_134_r" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_134_a" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_134_g" data-module="mechanics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to extend kinematics to two dimensions using vectors</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_135_r" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_135_a" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_135_g" data-module="mechanics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to use differentiation and integration with respect to time for kinematics, finding velocity and acceleration from displacement</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_136_r" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_136_a" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_136_g" data-module="mechanics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to extend kinematics to situations with variable acceleration using calculus</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_137_r" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_137_a" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_137_g" data-module="mechanics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to model motion under gravity in a vertical plane using vectors; model projectile motion</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_138_r" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_138_a" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_138_g" data-module="mechanics"></td></tr>
+<tr class="section-header"><td colspan="4" style="background:#e4d8d5;color:#1a1a1a">3.03 — Forces and Newton&#x27;s Laws</td></tr>
+<tr class="lo-header"><td>Learning outcomes</td><td class="rag-r">R</td><td class="rag-a">A</td><td class="rag-g">G</td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand the concept and vector nature of a force; understand that forces can be represented as vectors and combined</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_139_r" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_139_a" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_139_g" data-module="mechanics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use Newton&#x27;s first law: a particle remains at rest or in uniform motion unless acted on by a resultant force</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_140_r" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_140_a" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_140_g" data-module="mechanics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use Newton&#x27;s second law: F = ma in the direction of motion, and for constant and variable forces</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_141_r" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_141_a" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_141_g" data-module="mechanics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to draw and use free body diagrams</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_142_r" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_142_a" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_142_g" data-module="mechanics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use weight W = mg</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_143_r" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_143_a" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_143_g" data-module="mechanics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to model and analyse the motion of objects including those on inclined planes</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_144_r" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_144_a" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_144_g" data-module="mechanics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use Newton&#x27;s third law: every action has an equal and opposite reaction</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_145_r" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_145_a" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_145_g" data-module="mechanics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to use the concept of equilibrium of forces to solve problems</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_146_r" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_146_a" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_146_g" data-module="mechanics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to model friction using the coefficient of friction F ≤ μR and F = μR at the point of sliding</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_147_r" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_147_a" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_147_g" data-module="mechanics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to understand and use the static and dynamic cases of friction</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_148_r" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_148_a" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_148_g" data-module="mechanics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to solve problems involving connected particles, including via strings over pulleys</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_149_r" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_149_a" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_149_g" data-module="mechanics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to resolve forces into components and apply Newton&#x27;s second law in two dimensions</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_150_r" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_150_a" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_150_g" data-module="mechanics"></td></tr>
+<tr class="section-header"><td colspan="4" style="background:#e4d8d5;color:#1a1a1a">3.04 — Moments</td></tr>
+<tr class="lo-header"><td>Learning outcomes</td><td class="rag-r">R</td><td class="rag-a">A</td><td class="rag-g">G</td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to calculate the moment of a force about a point, including for coplanar forces</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_151_r" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_151_a" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_151_g" data-module="mechanics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Understand and be able to use the equilibrium condition: the sum of moments about any point is zero and the resultant force is zero</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_152_r" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_152_a" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_152_g" data-module="mechanics"></td></tr>
+<tr class="lo-row"><td class="lo-text"><span>Be able to use moments to solve problems involving rigid bodies in equilibrium, including non-uniform rods and beams</span></td><td class="cb"><input type="checkbox" class="rag-cb r-cb" data-key="ma_153_r" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb a-cb" data-key="ma_153_a" data-module="mechanics"></td><td class="cb"><input type="checkbox" class="rag-cb g-cb" data-key="ma_153_g" data-module="mechanics"></td></tr>
+</table>
+</div>
+
+</div>
+
+<script>
+const LS = 'maths_gh_';
+function getCfg() {
+  return { user: localStorage.getItem(LS+'user')||'', repo: localStorage.getItem(LS+'repo')||'', token: localStorage.getItem(LS+'token')||'' };
+}
+function isConfigured() { const c=getCfg(); return c.user&&c.repo&&c.token; }
+function openSetup() {
+  const c=getCfg();
+  document.getElementById('cfg-user').value=c.user;
+  document.getElementById('cfg-repo').value=c.repo;
+  document.getElementById('cfg-token').value=c.token;
+  document.getElementById('setup-modal').classList.add('open');
+}
+function closeSetup() { document.getElementById('setup-modal').classList.remove('open'); }
+function saveSetup() {
+  const user=document.getElementById('cfg-user').value.trim();
+  const repo=document.getElementById('cfg-repo').value.trim();
+  const token=document.getElementById('cfg-token').value.trim();
+  if(!user||!repo||!token){alert('Please fill in all three fields.');return;}
+  localStorage.setItem(LS+'user',user); localStorage.setItem(LS+'repo',repo); localStorage.setItem(LS+'token',token);
+  closeSetup(); setStatus('saving','⟳ Connecting…'); loadFromGitHub();
+}
+document.getElementById('setup-modal').addEventListener('click',function(e){if(e.target===this)closeSetup();});
+document.getElementById('sync-status').addEventListener('click',openSetup);
+document.getElementById('modal-cancel').addEventListener('click',closeSetup);
+document.getElementById('modal-save').addEventListener('click',saveSetup);
+
+function setStatus(state,text){const el=document.getElementById('sync-status');el.className='sync-'+state;el.textContent=text;}
+function collectState(){const s={};document.querySelectorAll('input.rag-cb').forEach(cb=>{s[cb.dataset.key]=cb.checked;});return s;}
+function applyState(state){
+  document.querySelectorAll('input.rag-cb').forEach(cb=>{
+    cb.checked=state[cb.dataset.key]===true||state[cb.dataset.key]==='true'||state[cb.dataset.key]===1;
+    updateRow(cb);
+  });
+  updateProgress();
+}
+
+const DATA_FILE='maths_progress.json';
+let fileSHA=null;
+async function loadFromGitHub(){
+  if(!isConfigured()){setStatus('idle','⚙ Setup sync');return;}
+  const{user,repo,token}=getCfg();
+  setStatus('saving','⟳ Loading…');
+  try{
+    const res=await fetch(`https://api.github.com/repos/${user}/${repo}/contents/${DATA_FILE}`,{headers:{Authorization:`token ${token}`,Accept:'application/vnd.github+json'}});
+    if(res.status===404){fileSHA=null;setStatus('ok','✓ Connected (new)');return;}
+    if(!res.ok)throw new Error(`HTTP ${res.status}`);
+    const json=await res.json();
+    fileSHA=json.sha;
+    const state=JSON.parse(atob(json.content.split('\n').join('')));
+    applyState(state);
+    setStatus('ok','✓ Synced');
+  }catch(e){setStatus('error','✗ Load failed');console.error(e);}
+}
+let saveTimer=null;
+function scheduleSave(){
+  if(!isConfigured())return;
+  setStatus('saving','⟳ Saving…');
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(saveToGitHub,800);
+}
+async function saveToGitHub(){
+  const{user,repo,token}=getCfg();
+  const content=btoa(JSON.stringify(collectState(),null,2));
+  const body={message:'Update maths checklist progress',content,...(fileSHA?{sha:fileSHA}:{})};
+  try{
+    const res=await fetch(`https://api.github.com/repos/${user}/${repo}/contents/${DATA_FILE}`,{method:'PUT',headers:{Authorization:`token ${token}`,Accept:'application/vnd.github+json','Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(!res.ok)throw new Error(`HTTP ${res.status}`);
+    const json=await res.json();
+    fileSHA=json.content.sha;
+    setStatus('ok','✓ Saved');
+  }catch(e){setStatus('error','✗ Save failed');console.error(e);}
+}
+
+document.querySelectorAll('input.rag-cb').forEach(cb=>{
+  cb.addEventListener('change',()=>{
+    if(cb.checked){cb.closest('tr').querySelectorAll('input.rag-cb').forEach(o=>{if(o!==cb)o.checked=false;});}
+    updateRow(cb); updateProgress(); scheduleSave();
+  });
+});
+
+function updateRow(cb){
+  const row=cb.closest('tr');
+  row.classList.remove('has-r','has-a','has-g');
+  if(row.querySelector('.r-cb')?.checked)row.classList.add('has-r');
+  if(row.querySelector('.a-cb')?.checked)row.classList.add('has-a');
+  if(row.querySelector('.g-cb')?.checked)row.classList.add('has-g');
+}
+
+function updateProgress(){
+  const doneG=document.querySelectorAll('input.g-cb:checked').length;
+  const total=document.querySelectorAll('input.r-cb').length;
+  const pct=total>0?(doneG/total)*100:0;
+  document.getElementById('progress-label').textContent=doneG+' / '+total;
+  document.getElementById('progress-bar').style.width=pct.toFixed(1)+'%';
+  document.querySelectorAll('.module-panel').forEach(panel=>{
+    const modTotal=panel.querySelectorAll('input.r-cb').length;
+    const modDone=panel.querySelectorAll('input.g-cb:checked').length;
+    const modPct=modTotal>0?(modDone/modTotal)*100:0;
+    const ring=panel.querySelector('.ring-fill');
+    const label=document.getElementById('pct_'+panel.id);
+    if(ring)ring.setAttribute('stroke-dasharray',modPct.toFixed(1)+' '+(100-modPct).toFixed(1));
+    if(label)label.textContent=Math.round(modPct)+'%';
+  });
+}
+
+if(isConfigured()){loadFromGitHub();}else{setStatus('idle','⚙ Setup sync');updateProgress();}
+</script>
+</body></html>
